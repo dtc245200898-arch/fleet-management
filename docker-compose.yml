@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Cấu hình Database
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: fleet_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # Cấu hình Ứng dụng Backend
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DB_USER: admin
+      DB_HOST: db      # Trỏ tới tên service 'db' ở trên
+      DB_NAME: fleet_db
+      DB_PASSWORD: 123456
+    depends_on:
+      - db
+
+volumes:
+  pgdata: # Lưu trữ dữ liệu DB không bị mất khi tắt container
