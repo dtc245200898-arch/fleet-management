@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#10231e">
+    <title>FleetOps | Quản lý đội xe</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="/" aria-label="FleetOps trang chủ">
+          <span class="brand-mark">F</span>
+          <span><strong>fleetops</strong><small>FLEET MANAGEMENT</small></span>
+        </a>
+        <div class="nav-caption">QUẢN LÝ</div>
+        <nav class="navigation" aria-label="Điều hướng chính">
+          <button class="nav-item active" data-view="overview"><span>▦</span>Tổng quan</button>
+          <button class="nav-item" data-view="vehicles"><span>▰</span>Phương tiện</button>
+          <button class="nav-item" data-view="trips"><span>↗</span>Chuyến đi</button>
+          <button class="nav-item" data-view="maintenance"><span>⚙</span>Bảo dưỡng</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="sidebar-note"><span class="live-dot"></span>Hệ thống đang hoạt động</div>
+          <div class="user-card"><span class="avatar">QT</span><span><strong>Quản trị viên</strong><small>Điều hành đội xe</small></span></div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumbs">FleetOps <span>/</span> <strong id="breadcrumb">Tổng quan</strong></div>
+          <div class="topbar-right"><span id="today"></span><span class="topbar-avatar">QT</span></div>
+        </header>
+
+        <section class="page-content">
+          <div class="page-heading">
+            <div><div class="eyebrow">ĐIỀU HÀNH ĐỘI XE</div><h1 id="page-title">Tổng quan</h1><p id="page-description">Theo dõi hoạt động và tình trạng đội xe của bạn.</p></div>
+            <button class="button button-primary" id="primary-action"><span>＋</span>Thêm phương tiện</button>
+          </div>
+
+          <div id="notice" class="notice" role="status" hidden></div>
+
+          <section class="view-panel" id="overview-view">
+            <div class="welcome-card">
+              <div>
+                <div class="eyebrow">FLEETOPS ONLINE</div>
+                <h2>Chào mừng trở lại!</h2>
+                <p>Theo dõi phương tiện, chuyến đi và tình trạng đội xe của bạn.</p>
+              </div>
+              <span class="welcome-status"><span class="live-dot"></span>Hệ thống đang hoạt động</span>
+            </div>
+            <div class="stats-grid">
+              <article class="stat-card"><div class="stat-top"><span>Tổng phương tiện</span><span class="stat-icon icon-green">▰</span></div><strong id="stat-total">—</strong><small>Phương tiện trong đội xe</small></article>
+              <article class="stat-card"><div class="stat-top"><span>Đang hoạt động</span><span class="stat-icon icon-blue">↗</span></div><strong id="stat-active">—</strong><small id="stat-active-note">Sẵn sàng vận hành</small></article>
+              <article class="stat-card"><div class="stat-top"><span>Đang bảo dưỡng</span><span class="stat-icon icon-orange">⚙</span></div><strong id="stat-maintenance">—</strong><small>Cần theo dõi kỹ thuật</small></article>
+              <article class="stat-card"><div class="stat-top"><span>Chuyến đang chạy</span><span class="stat-icon icon-purple">⇢</span></div><strong id="stat-trips">—</strong><small>Chuyến đi trong hệ thống</small></article>
+            </div>
+            <div class="content-card">
+              <div class="card-heading"><div><h2>Đội xe</h2><p>Danh sách phương tiện được cập nhật gần đây</p></div><button class="button button-quiet" data-go="vehicles">Xem tất cả <span>→</span></button></div>
+              <div class="table-wrap"><table><thead><tr><th>PHƯƠNG TIỆN</th><th>BIỂN SỐ</th><th>NĂM SX</th><th>SỐ KM</th><th>TRẠNG THÁI</th><th></th></tr></thead><tbody id="overview-vehicles"></tbody></table></div>
+            </div>
+            <div class="content-card secondary-card">
+              <div class="card-heading"><div><h2>Chuyến đi gần đây</h2><p>Theo dõi lịch trình vận hành</p></div><button class="button button-quiet" data-go="trips">Xem tất cả <span>→</span></button></div>
+              <div class="table-wrap"><table><thead><tr><th>PHƯƠNG TIỆN</th><th>TÀI XẾ</th><th>LỘ TRÌNH</th><th>NGÀY KHỞI HÀNH</th><th>TRẠNG THÁI</th></tr></thead><tbody id="overview-trips"></tbody></table></div>
+            </div>
+          </section>
+
+          <section class="view-panel" id="vehicles-view" hidden>
+            <div class="content-card">
+              <div class="toolbar"><label class="search-box"><span>⌕</span><input id="vehicle-search" type="search" placeholder="Tìm theo biển số, hãng xe..." aria-label="Tìm phương tiện"></label><span id="vehicle-count" class="result-count"></span></div>
+              <div class="table-wrap"><table><thead><tr><th>PHƯƠNG TIỆN</th><th>BIỂN SỐ</th><th>NĂM SX</th><th>SỐ KM</th><th>TRẠNG THÁI</th><th>THAO TÁC</th></tr></thead><tbody id="vehicles-table"></tbody></table></div>
+            </div>
+          </section>
+
+          <section class="view-panel" id="trips-view" hidden>
+            <div class="content-card"><div class="toolbar"><span class="result-count" id="trip-count"></span><span class="helper-text">Ghi lại tài xế, lộ trình và trạng thái chuyến đi.</span></div><div class="table-wrap"><table><thead><tr><th>PHƯƠNG TIỆN</th><th>TÀI XẾ</th><th>LỘ TRÌNH</th><th>KHỞI HÀNH</th><th>QUÃNG ĐƯỜNG</th><th>TRẠNG THÁI</th></tr></thead><tbody id="trips-table"></tbody></table></div></div>
+          </section>
+
+          <section class="view-panel" id="maintenance-view" hidden>
+            <div class="content-card"><div class="toolbar"><span class="result-count" id="maintenance-count"></span><span class="helper-text">Theo dõi lịch bảo dưỡng và chi phí sửa chữa.</span></div><div class="table-wrap"><table><thead><tr><th>PHƯƠNG TIỆN</th><th>NGÀY</th><th>HẠNG MỤC</th><th>MÔ TẢ</th><th>CHI PHÍ</th><th>TRẠNG THÁI</th></tr></thead><tbody id="maintenance-table"></tbody></table></div></div>
+          </section>
+        </section>
+        <footer>FleetOps <span>·</span> Hệ thống quản lý đội xe</footer>
+      </main>
+    </div>
+
+    <dialog id="record-dialog" class="record-dialog">
+      <form id="record-form">
+        <div class="dialog-heading"><div><div class="eyebrow" id="dialog-eyebrow">ĐỘI XE</div><h2 id="dialog-title">Thêm phương tiện</h2></div><button type="button" class="icon-button" id="dialog-close" aria-label="Đóng">×</button></div>
+        <div id="form-fields" class="form-grid"></div>
+        <div class="dialog-actions"><button type="button" class="button button-outline" id="dialog-cancel">Hủy</button><button type="submit" class="button button-primary" id="dialog-submit">Lưu thông tin</button></div>
+      </form>
+    </dialog>
+  </body>
+</html>

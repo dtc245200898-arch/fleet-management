@@ -1,18 +1,21 @@
-# Sử dụng môi trường Node.js bản nhẹ
-FROM node:18-alpine
+FROM python:3.12-slim
 
-# Tạo thư mục làm việc trong container
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    HOST=0.0.0.0 \
+    PORT=8000 \
+    FLEET_DB_PATH=/data/fleet.db
+
 WORKDIR /app
+COPY app/ /app/
+RUN addgroup --system app && adduser --system --ingroup app app \
+    && mkdir -p /data /logs \
+    && chown -R app:app /app /data /logs
 
-# Copy package.json và cài đặt thư viện
-COPY package*.json ./
-RUN npm install
+USER app
+EXPOSE 8000
+VOLUME ["/data", "/logs"]
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)" || exit 1
 
-# Copy toàn bộ mã nguồn vào container
-COPY . .
-
-# Mở port 3000
-EXPOSE 3000
-
-# Lệnh chạy ứng dụng
-CMD ["npm", "start"]
+CMD ["python", "server.py"]
